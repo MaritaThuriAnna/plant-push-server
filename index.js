@@ -1,8 +1,8 @@
-const express = require('express');
-const fetch = require('node-fetch');
-const cors = require('cors');
-const { google } = require('googleapis');
-const serviceAccount = require('./service-account.json');
+const express = require("express");
+const fetch = require("node-fetch");
+const cors = require("cors");
+const { google } = require("googleapis");
+const serviceAccount = require("./service-account.json");
 
 const app = express();
 app.use(cors());
@@ -15,32 +15,32 @@ async function getAccessToken() {
     serviceAccount.client_email,
     null,
     serviceAccount.private_key,
-    ['https://www.googleapis.com/auth/firebase.messaging']
+    ["https://www.googleapis.com/auth/firebase.messaging"]
   );
   const tokens = await jwtClient.authorize();
   return tokens.access_token;
 }
 
-app.post('/send-notification', async (req, res) => {
+app.post("/send-notification", async (req, res) => {
   const { token, title, body } = req.body;
   const accessToken = await getAccessToken();
 
   const message = {
     message: {
       token,
-      notification: { title, body }
-    }
+      notification: { title, body },
+    },
   };
 
   const response = await fetch(
     `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
     {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(message)
+      body: JSON.stringify(message),
     }
   );
 
@@ -48,6 +48,7 @@ app.post('/send-notification', async (req, res) => {
   res.status(200).send(data);
 });
 
-app.listen(3000, () => {
-  console.log('🚀 Push server running on http://localhost:3000');
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`🚀 Push server running on http://localhost:${port}`);
 });
