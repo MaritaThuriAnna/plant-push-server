@@ -2,7 +2,16 @@ const express = require("express");
 const fetch = require("node-fetch");
 const cors = require("cors");
 const { google } = require("googleapis");
-const serviceAccount = require("./service-account.json");
+// const serviceAccount = require("./service-account.json");
+
+const serviceAccount = {
+  type: 'service_account',
+  project_id: process.env.PROJECT_ID,
+  private_key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
+  client_email: process.env.CLIENT_EMAIL,
+  token_uri: 'https://oauth2.googleapis.com/token'
+};
+
 
 const app = express();
 app.use(cors());
